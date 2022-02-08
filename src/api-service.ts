@@ -1,7 +1,12 @@
 const BASE_URL = 'http://api.weatherapi.com/v1/'
 const API_KEY = 'b88614b3fb684e8b996104153220302'
+const DATE_NOW_STR = new Date()
+  .toLocaleDateString()
+  .split('.')
+  .reverse()
+  .join('-')
 
-// http://api.weatherapi.com/v1/forecast.json?key=9ec4f790dbff4e13ab2113712220702&q=London&days=1&aqi=no&alerts=no
+// === TS types ===
 
 type repayObjInArr = Array<object>
 
@@ -15,6 +20,8 @@ type ForecastApiType = (
 type HistoryApiType = (town?: string, date?: string) => Promise<object>
 
 type SearchApiType = (town?: string) => Promise<repayObjInArr>
+
+// === END TS types ===
 
 export const fetchForecast: ForecastApiType = (
   town = 'Kiev',
@@ -30,17 +37,14 @@ export const fetchForecast: ForecastApiType = (
     .catch((err) => console.log(err))
 }
 
-const time = new Date().toLocaleDateString().split('.').reverse().join('-')
-
-// http://api.weatherapi.com/v1/history.json?key=b88614b3fb684e8b996104153220302&q=Kiev&dt=2022-02-01
-
-export const fetchHistory: HistoryApiType = (town = 'Kiev', date = time) => {
+export const fetchHistory: HistoryApiType = (
+  town = 'Kiev',
+  date = DATE_NOW_STR
+) => {
   return fetch(`${BASE_URL}history.json?key=${API_KEY}&q=${town}&dt=${date}`)
     .then((res) => res.json())
     .catch((err) => console.log(err))
 }
-
-// http://api.weatherapi.com/v1/search.json?key=b88614b3fb684e8b996104153220302&q=Kiev
 
 export const fetchSearch: SearchApiType = (town = 'Kiev') => {
   return fetch(`${BASE_URL}search.json?key=${API_KEY}&q=${town}`)
